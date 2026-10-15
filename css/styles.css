@@ -1,0 +1,594 @@
+/* ==========================================================================
+   Design tokens
+   Every colour, space and radius lives here so the theme can change in one
+   place. charts.js also reads the --chart-* tokens, so canvas charts match.
+   ========================================================================== */
+:root {
+  --color-bg: #0b0f1a;
+  --color-surface: #151b2b;
+  --color-surface-raised: #1c2438;
+  --color-border: #263049;
+  --color-text: #e7ebf5;
+  --color-text-muted: #9aa4bd;
+  --color-accent: #7c8cff;
+  --color-accent-strong: #a3aeff;
+  --color-badge: #ffb547;
+  --color-focus: #ffd166;
+
+  --chart-series: var(--color-accent);
+  --chart-grid: rgba(154, 164, 189, 0.14);
+  --chart-text: var(--color-text-muted);
+
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-size-sm: 0.8125rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-kpi: 1.75rem;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-pill: 999px;
+
+  --content-max-width: 1200px;
+  --transition-fast: 150ms ease;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-md);
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+p,
+dl,
+dd {
+  margin: 0;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Hides content visually but keeps it available to screen readers. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  z-index: 10;
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-accent);
+  color: var(--color-bg);
+  border-radius: var(--radius-sm);
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+.header {
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.header__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+
+.header__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.header__avatar {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-accent), #c86bfa);
+  color: var(--color-bg);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.header__title {
+  font-size: var(--font-size-lg);
+  line-height: 1.2;
+}
+
+.header__subtitle {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* ==========================================================================
+   Badge
+   ========================================================================== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid currentColor;
+  border-radius: var(--radius-pill);
+  color: var(--color-badge);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.badge__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ==========================================================================
+   Layout
+   Mobile-first: everything is a single column, wider screens add columns.
+   ========================================================================== */
+.dashboard {
+  display: grid;
+  gap: var(--space-5);
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-4);
+}
+
+.dashboard__content {
+  display: grid;
+  gap: var(--space-5);
+  /* Lets grid children (like the table wrapper) shrink below their content width. */
+  min-width: 0;
+}
+
+.charts {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.footer {
+  padding: var(--space-5) var(--space-4) var(--space-6);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+.button {
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent);
+  color: var(--color-bg);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.button:hover {
+  background: var(--color-accent-strong);
+  border-color: var(--color-accent-strong);
+}
+
+.button--ghost {
+  background: transparent;
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.button--ghost:hover {
+  background: var(--color-surface-raised);
+  border-color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   Filters
+   ========================================================================== */
+.filters {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.filters__fieldset {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.filters__reset {
+  align-self: end;
+}
+
+.filters__summary {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.field {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.field__label {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+}
+
+.field__control {
+  width: 100%;
+  min-height: 40px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  transition: border-color var(--transition-fast);
+}
+
+.field__control:hover {
+  border-color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   KPI cards
+   ========================================================================== */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.kpi {
+  display: grid;
+  align-content: start;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.kpi__label {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.kpi__value {
+  font-size: var(--font-size-kpi);
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.kpi__hint {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+/* ==========================================================================
+   Panels (charts and table share this card style)
+   ========================================================================== */
+.panel {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.panel__title {
+  font-size: var(--font-size-md);
+}
+
+.panel__subtitle {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* Chart.js needs a sized, relatively positioned parent to stay responsive. */
+.panel__chart {
+  position: relative;
+  height: 260px;
+}
+
+.panel__fallback {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+/* ==========================================================================
+   Table
+   ========================================================================== */
+.table-scroll {
+  overflow-x: auto;
+  border-radius: var(--radius-sm);
+}
+
+.table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.table__heading {
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table__heading--numeric,
+.table__cell--numeric {
+  text-align: right;
+}
+
+.table__sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  background: none;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.table__sort:hover,
+[aria-sort] > .table__sort {
+  color: var(--color-text);
+}
+
+/* Sort direction indicator, driven purely by the aria-sort attribute. */
+.table__sort-icon::after {
+  content: "↕";
+  opacity: 0.35;
+}
+
+[aria-sort="ascending"] .table__sort-icon::after {
+  content: "↑";
+  opacity: 1;
+}
+
+[aria-sort="descending"] .table__sort-icon::after {
+  content: "↓";
+  opacity: 1;
+}
+
+.table__row:hover {
+  background: var(--color-surface-raised);
+}
+
+.table__cell {
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.table__cell--title {
+  white-space: normal;
+  min-width: 240px;
+}
+
+.table__video-title {
+  display: block;
+  font-weight: 500;
+}
+
+.table__category {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+/* ==========================================================================
+   Empty and error states
+   ========================================================================== */
+.state {
+  display: none;
+  justify-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-4);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.state__icon {
+  font-size: 2rem;
+}
+
+.state__title {
+  font-size: var(--font-size-lg);
+}
+
+.state__text {
+  max-width: 40ch;
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   Skeletons
+   ========================================================================== */
+.skeleton,
+.skeleton-rows {
+  display: none;
+}
+
+.skeleton {
+  height: 2.25rem;
+  border-radius: var(--radius-sm);
+}
+
+/* One shimmer definition shared by every placeholder shown while loading. */
+.skeleton,
+.dashboard[data-state="loading"] .kpi__value,
+.dashboard[data-state="loading"] .panel__chart {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-raised) 25%,
+    var(--color-border) 50%,
+    var(--color-surface-raised) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+.dashboard[data-state="loading"] .kpi__value {
+  width: 70%;
+  border-radius: var(--radius-sm);
+  color: transparent;
+}
+
+.dashboard[data-state="loading"] .panel__chart {
+  border-radius: var(--radius-sm);
+}
+
+.dashboard[data-state="loading"] .panel__chart canvas,
+.dashboard[data-state="loading"] .table-scroll {
+  display: none;
+}
+
+.dashboard[data-state="loading"] .skeleton-rows {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.dashboard[data-state="loading"] .skeleton {
+  display: block;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* ==========================================================================
+   UI states
+   The <main> element's data-state attribute is the single switch for which
+   view is shown, so JS never toggles visibility element by element.
+   ========================================================================== */
+.dashboard[data-state="empty"] .dashboard__content,
+.dashboard[data-state="error"] .dashboard__content,
+.dashboard[data-state="error"] .filters {
+  display: none;
+}
+
+.dashboard[data-state="empty"] .state--empty,
+.dashboard[data-state="error"] .state--error {
+  display: grid;
+}
+
+/* ==========================================================================
+   Responsive: tablet and up
+   ========================================================================== */
+@media (min-width: 640px) {
+  .dashboard {
+    padding: var(--space-6) var(--space-5);
+  }
+
+  .filters__fieldset {
+    grid-template-columns: 2fr 1fr 1fr auto;
+    align-items: end;
+  }
+
+  .kpis {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* ==========================================================================
+   Responsive: desktop
+   ========================================================================== */
+@media (min-width: 960px) {
+  .charts {
+    grid-template-columns: 3fr 2fr;
+  }
+
+  .panel__chart {
+    height: 300px;
+  }
+}
+
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
