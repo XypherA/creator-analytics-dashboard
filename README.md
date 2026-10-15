@@ -6,7 +6,7 @@ I run a Shorts channel myself, and YouTube Studio doesn't make it easy to ask si
 
 > **Note:** all numbers are generated **sample data** (`data/videos.json`), not real channel statistics. The UI labels this clearly.
 
-**Live demo:** _coming soon_
+**Live demo:** https://xyphera.github.io/creator-analytics-dashboard/
 
 ## Features
 
