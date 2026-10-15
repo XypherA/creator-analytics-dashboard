@@ -3,26 +3,25 @@
 const DAY_MS = 24 * 60 * 60 * 1000;
 const SEARCH_DEBOUNCE_MS = 200;
 
-/**
- * The newest publish date in the data set. Date ranges are measured back from
- * here rather than from "now", because the sample data is static: anchoring to
- * today would make "Last 7 days" empty a week after deploying.
- */
-export function getReferenceDate(videos) {
-  return Math.max(...videos.map((video) => video.publishedAt));
-}
-
 /** Sorted, de-duplicated category names for the dropdown. */
 export function getCategories(videos) {
   return [...new Set(videos.map((video) => video.category))].sort();
 }
 
 /**
- * Inclusive window: "Last 7 days" covers the reference day and the 6 before it.
+ * The publish-date window for a range ('7' | '30' | '90' | 'all').
+ * Ranges count back from the newest upload rather than from today: the data is
+ * a snapshot, so anchoring to "now" would leave "Last 7 days" empty whenever
+ * the channel hasn't posted that week. Inclusive: "Last 7 days" is the newest
+ * upload's day plus the 6 before it.
  * Shared by the filter and the line chart's x-axis so both agree on the range.
  */
-export function getDateWindow(referenceDate, range) {
-  return { start: referenceDate - (range - 1) * DAY_MS, end: referenceDate };
+export function getDateWindow(videos, range) {
+  const dates = videos.map((video) => video.publishedAt);
+  const end = Math.max(...dates);
+  const start = range === 'all' ? Math.min(...dates) : end - (Number(range) - 1) * DAY_MS;
+
+  return { start, end };
 }
 
 /**
@@ -68,7 +67,7 @@ export function bindFilterForm(form, onChange) {
 
   query.addEventListener('input', onQueryInput);
   category.addEventListener('change', () => onChange({ category: category.value }));
-  range.addEventListener('change', () => onChange({ range: Number(range.value) }));
+  range.addEventListener('change', () => onChange({ range: range.value }));
   // Enter in the search box would otherwise reload the page.
   form.addEventListener('submit', (event) => event.preventDefault());
 }
@@ -83,5 +82,5 @@ export function syncFilterForm(form, { query, category, range }) {
     elements.query.value = query;
   }
   elements.category.value = category;
-  elements.range.value = String(range);
+  elements.range.value = range;
 }

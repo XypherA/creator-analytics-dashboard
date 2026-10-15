@@ -46,11 +46,14 @@ export function getViewsByCategory(videos) {
     .sort((a, b) => b.views - a.views);
 }
 
-/** Tick spacing that keeps date labels readable for each range. */
-function getTickStep(range) {
-  if (range <= 7) return DAY_MS;
-  if (range <= 30) return 7 * DAY_MS;
-  return 14 * DAY_MS;
+/** Tick spacing that keeps date labels readable for the visible span. */
+function getTickStep({ start, end }) {
+  const spanDays = (end - start) / DAY_MS;
+
+  if (spanDays <= 7) return DAY_MS;
+  if (spanDays <= 31) return 7 * DAY_MS;
+  if (spanDays <= 90) return 14 * DAY_MS;
+  return 28 * DAY_MS;
 }
 
 // --- Chart creation -----------------------------------------------------------
@@ -166,7 +169,7 @@ function renderUnavailable(canvases) {
 
 // --- Updates ------------------------------------------------------------------
 
-function updateViewsChart(chart, videos, dateWindow, range) {
+function updateViewsChart(chart, videos, dateWindow) {
   const points = getViewsSeries(videos);
   const peak = points.reduce((best, point) => (point.y > best.y ? point : best));
 
@@ -175,7 +178,7 @@ function updateViewsChart(chart, videos, dateWindow, range) {
     min: dateWindow.start,
     max: dateWindow.end,
   });
-  chart.options.scales.x.ticks.stepSize = getTickStep(range);
+  chart.options.scales.x.ticks.stepSize = getTickStep(dateWindow);
   chart.update();
 
   // Canvas content is invisible to screen readers, so describe the takeaway.
@@ -202,10 +205,10 @@ function updateCategoryChart(chart, videos) {
 
 /**
  * Renders both charts for the given videos (assumed non-empty).
- * @param {{ videos: object[], dateWindow: {start: number, end: number}, range: number,
+ * @param {{ videos: object[], dateWindow: {start: number, end: number},
  *   viewsCanvas: HTMLCanvasElement, categoryCanvas: HTMLCanvasElement }} options
  */
-export function renderCharts({ videos, dateWindow, range, viewsCanvas, categoryCanvas }) {
+export function renderCharts({ videos, dateWindow, viewsCanvas, categoryCanvas }) {
   if (typeof window.Chart !== 'function') {
     renderUnavailable([viewsCanvas, categoryCanvas].filter((canvas) => canvas.isConnected));
     return;
@@ -218,6 +221,6 @@ export function renderCharts({ videos, dateWindow, range, viewsCanvas, categoryC
     charts.category = createCategoryChart(categoryCanvas, theme);
   }
 
-  updateViewsChart(charts.views, videos, dateWindow, range);
+  updateViewsChart(charts.views, videos, dateWindow);
   updateCategoryChart(charts.category, videos);
 }

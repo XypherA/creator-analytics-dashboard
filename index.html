@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Creator Analytics · @xypherfact</title>
-  <meta name="description" content="Analytics dashboard for the @xypherfact YouTube Shorts channel, built with vanilla HTML, CSS and JavaScript.">
+  <meta name="description" content="Analytics dashboard for the @xypherfact YouTube Shorts channel, using real channel data and built with vanilla HTML, CSS and JavaScript.">
   <meta name="color-scheme" content="dark">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%237c8cff%27/%3E%3Cpath d=%27M8 22V14M14 22V9M20 22V16M26 22V11%27 stroke=%27%230b0f1a%27 stroke-width=%273%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">
   <link rel="stylesheet" href="css/styles.css">
@@ -23,12 +23,13 @@
         <span class="header__avatar" aria-hidden="true">XF</span>
         <div>
           <h1 class="header__title">@xypherfact</h1>
-          <p class="header__subtitle">YouTube Shorts analytics · facts channel</p>
+          <p class="header__subtitle">YouTube Shorts analytics</p>
         </div>
       </div>
-      <p class="badge" title="All numbers on this page are generated sample data, not real channel stats.">
+      <!-- Filled in from the data file once it loads (see renderDataSource in main.js). -->
+      <p class="badge" id="data-badge" hidden>
         <span class="badge__dot" aria-hidden="true"></span>
-        Sample data
+        <span id="data-badge-label"></span>
       </p>
     </div>
   </header>
@@ -45,13 +46,13 @@
           <div class="field field--search">
             <label class="field__label" for="filter-query">Search titles</label>
             <input class="field__control" type="search" id="filter-query" name="query"
-              placeholder="e.g. octopus" autocomplete="off" spellcheck="false">
+              placeholder="e.g. Iron Man" autocomplete="off" spellcheck="false">
           </div>
 
           <div class="field">
-            <label class="field__label" for="filter-category">Category</label>
+            <label class="field__label" for="filter-category">Setting</label>
             <select class="field__control" id="filter-category" name="category">
-              <option value="all">All categories</option>
+              <option value="all">All settings</option>
             </select>
           </div>
 
@@ -60,7 +61,8 @@
             <select class="field__control" id="filter-range" name="range">
               <option value="7">Last 7 days</option>
               <option value="30">Last 30 days</option>
-              <option value="90" selected>Last 90 days</option>
+              <option value="90">Last 90 days</option>
+              <option value="all" selected>All uploads</option>
             </select>
           </div>
 
@@ -88,7 +90,7 @@
             <dd class="kpi__hint">(likes + comments + shares) ÷ views</dd>
           </div>
           <div class="kpi">
-            <dt class="kpi__label">Videos</dt>
+            <dt class="kpi__label">Shorts</dt>
             <dd class="kpi__value" data-kpi="videoCount">—</dd>
           </div>
         </dl>
@@ -107,8 +109,8 @@
 
         <section class="panel" aria-labelledby="category-chart-title">
           <header class="panel__header">
-            <h2 class="panel__title" id="category-chart-title">Views by category</h2>
-            <p class="panel__subtitle">Total views, highest first</p>
+            <h2 class="panel__title" id="category-chart-title">Views by setting</h2>
+            <p class="panel__subtitle">Grouped by the setting in each title, highest first</p>
           </header>
           <div class="panel__chart">
             <canvas id="category-chart" role="img" aria-label="Bar chart of total views by category"></canvas>
@@ -118,8 +120,8 @@
 
       <section class="panel" aria-labelledby="table-title">
         <header class="panel__header">
-          <h2 class="panel__title" id="table-title">Videos</h2>
-          <p class="panel__subtitle">Click a column header to sort</p>
+          <h2 class="panel__title" id="table-title">Shorts</h2>
+          <p class="panel__subtitle">Click a column header to sort · titles open the Short on YouTube</p>
         </header>
 
         <div class="skeleton-rows" aria-hidden="true">
@@ -161,8 +163,8 @@
 
     <section class="state state--empty" aria-labelledby="empty-title">
       <span class="state__icon" aria-hidden="true">🔍</span>
-      <h2 class="state__title" id="empty-title">No videos match your filters</h2>
-      <p class="state__text">Try a different search term, category or date range.</p>
+      <h2 class="state__title" id="empty-title">No Shorts match your filters</h2>
+      <p class="state__text">Try a different search term, setting or date range.</p>
       <button class="button" type="button" data-action="reset">Reset filters</button>
     </section>
 
@@ -175,7 +177,8 @@
   </main>
 
   <footer class="footer">
-    <p>Sample data for demonstration only · Built with vanilla JS &amp; Chart.js</p>
+    <p id="data-source"></p>
+    <p>Built with vanilla JS &amp; Chart.js</p>
   </footer>
 </body>
 </html>

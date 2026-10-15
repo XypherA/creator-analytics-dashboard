@@ -8,7 +8,6 @@ import {
   filterVideos,
   getCategories,
   getDateWindow,
-  getReferenceDate,
   renderCategoryOptions,
   syncFilterForm,
 } from './filters.js';
@@ -22,6 +21,9 @@ const elements = {
   form: document.getElementById('filters-form'),
   fieldset: document.getElementById('filters-fieldset'),
   summary: document.getElementById('results-summary'),
+  badge: document.getElementById('data-badge'),
+  badgeLabel: document.getElementById('data-badge-label'),
+  source: document.getElementById('data-source'),
   kpis: document.getElementById('kpis'),
   viewsCanvas: document.getElementById('views-chart'),
   categoryCanvas: document.getElementById('category-chart'),
@@ -36,7 +38,7 @@ let simulateNextError = new URLSearchParams(window.location.search).get('error')
 // Loaded data. Kept outside state because it never changes after loading;
 // state only describes how the user is viewing it.
 let videos = [];
-let referenceDate = 0;
+let latestUpload = 0;
 
 /** Switches between loading | ready | empty | error. CSS does the rest. */
 function setViewState(viewState) {
@@ -48,11 +50,20 @@ function setViewState(viewState) {
 
 function renderSummary(matchCount) {
   elements.summary.textContent =
-    `Showing ${matchCount} of ${videos.length} videos · data as of ${formatDate(referenceDate)}`;
+    `Showing ${matchCount} of ${videos.length} Shorts · date ranges count back from the latest upload (${formatDate(latestUpload)})`;
+}
+
+/** The badge and footer come from the data file, so the label can't drift from the data. */
+function renderDataSource({ isSample, source, snapshotDate }) {
+  elements.badge.hidden = false;
+  elements.badge.classList.toggle('badge--real', !isSample);
+  elements.badgeLabel.textContent = isSample ? 'Sample data' : 'Real channel data';
+  elements.badge.title = `${source}, snapshot taken ${formatDate(snapshotDate)}`;
+  elements.source.textContent = `Data: ${source} · snapshot ${formatDate(snapshotDate)}`;
 }
 
 function render(state) {
-  const dateWindow = getDateWindow(referenceDate, state.range);
+  const dateWindow = getDateWindow(videos, state.range);
   const filtered = filterVideos(videos, state, dateWindow);
 
   syncFilterForm(elements.form, state);
@@ -69,7 +80,6 @@ function render(state) {
   renderCharts({
     videos: filtered,
     dateWindow,
-    range: state.range,
     viewsCanvas: elements.viewsCanvas,
     categoryCanvas: elements.categoryCanvas,
   });
@@ -83,8 +93,10 @@ async function loadDashboard() {
     const simulateError = simulateNextError;
     simulateNextError = false;
 
-    videos = await fetchVideos({ simulateError });
-    referenceDate = getReferenceDate(videos);
+    const data = await fetchVideos({ simulateError });
+    videos = data.videos;
+    latestUpload = getDateWindow(videos, 'all').end;
+    renderDataSource(data.meta);
 
     const categories = getCategories(videos);
     renderCategoryOptions(elements.form.elements.category, categories);

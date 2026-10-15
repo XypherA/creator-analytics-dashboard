@@ -25,9 +25,9 @@ function normalizeVideo(video) {
 }
 
 /**
- * Fetches and normalizes the sample videos.
+ * Fetches and normalizes the channel's Shorts.
  * @param {{ simulateError?: boolean }} options - simulateError forces a failure for demos.
- * @returns {Promise<object[]>}
+ * @returns {Promise<{ meta: { isSample: boolean, source: string, snapshotDate: number }, videos: object[] }>}
  */
 export async function fetchVideos({ simulateError = false } = {}) {
   await wait(ARTIFICIAL_DELAY_MS);
@@ -42,6 +42,10 @@ export async function fetchVideos({ simulateError = false } = {}) {
     throw new Error(`The server responded with ${response.status} ${response.statusText}.`);
   }
 
-  const data = await response.json();
-  return data.videos.map(normalizeVideo);
+  const { videos, isSample, source, snapshotDate } = await response.json();
+
+  return {
+    meta: { isSample, source, snapshotDate: Date.parse(snapshotDate) },
+    videos: videos.map(normalizeVideo),
+  };
 }

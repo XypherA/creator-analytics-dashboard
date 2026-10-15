@@ -13,6 +13,7 @@
   --color-accent: #7c8cff;
   --color-accent-strong: #a3aeff;
   --color-badge: #ffb547;
+  --color-badge-real: #4ade80;
   --color-focus: #ffd166;
 
   --chart-series: var(--color-accent);
@@ -172,6 +173,15 @@ select {
   font-weight: 600;
 }
 
+.badge--real {
+  color: var(--color-badge-real);
+}
+
+/* The display rule above would otherwise beat the [hidden] attribute. */
+.badge[hidden] {
+  display: none;
+}
+
 .badge__dot {
   width: 8px;
   height: 8px;
@@ -204,6 +214,8 @@ select {
 }
 
 .footer {
+  display: grid;
+  gap: var(--space-1);
   padding: var(--space-5) var(--space-4) var(--space-6);
   color: var(--color-text-muted);
   font-size: var(--font-size-sm);
@@ -449,7 +461,14 @@ select {
 
 .table__video-title {
   display: block;
+  color: inherit;
   font-weight: 500;
+  text-decoration: none;
+}
+
+.table__video-title:hover {
+  color: var(--color-accent-strong);
+  text-decoration: underline;
 }
 
 .table__category {

@@ -66,15 +66,18 @@ function createCell(text, modifier) {
   return cell;
 }
 
+const YOUTUBE_SHORTS_URL = 'https://www.youtube.com/shorts/';
+
 // The title is a row header so screen readers announce it with each value.
 function createTitleCell(video) {
   const cell = document.createElement('th');
-  const title = document.createElement('span');
+  const title = document.createElement('a');
   const category = document.createElement('span');
 
   cell.scope = 'row';
   cell.className = 'table__cell table__cell--title';
   title.className = 'table__video-title';
+  title.href = `${YOUTUBE_SHORTS_URL}${encodeURIComponent(video.id)}`;
   title.textContent = video.title;
   category.className = 'table__category';
   category.textContent = video.category;

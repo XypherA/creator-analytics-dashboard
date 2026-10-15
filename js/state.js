@@ -2,13 +2,14 @@
 // setState(); subscribers re-render from the new state. Nothing else in the app
 // stores filter or sort values, so the screen and the URL can never disagree.
 
-export const RANGE_OPTIONS = [7, 30, 90];
+// Kept as strings because they round-trip through the URL and <select> values.
+export const RANGE_OPTIONS = ['7', '30', '90', 'all'];
 export const SORT_KEYS = ['title', 'publishDate', 'views', 'likes', 'engagementRate'];
 
 export const DEFAULT_STATE = Object.freeze({
   query: '',
   category: 'all',
-  range: 90,
+  range: 'all',
   sortKey: 'publishDate',
   sortDir: 'desc',
 });
@@ -32,7 +33,7 @@ const listeners = new Set();
  */
 export function readStateFromUrl(search) {
   const params = new URLSearchParams(search);
-  const range = Number(params.get(URL_PARAMS.range));
+  const range = params.get(URL_PARAMS.range);
   const sortKey = params.get(URL_PARAMS.sortKey);
   const sortDir = params.get(URL_PARAMS.sortDir);
 
