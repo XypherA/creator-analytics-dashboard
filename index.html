@@ -6,6 +6,7 @@
   <title>Creator Analytics · @xypherfact</title>
   <meta name="description" content="Analytics dashboard for the @xypherfact YouTube Shorts channel, built with vanilla HTML, CSS and JavaScript.">
   <meta name="color-scheme" content="dark">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%237c8cff%27/%3E%3Cpath d=%27M8 22V14M14 22V9M20 22V16M26 22V11%27 stroke=%27%230b0f1a%27 stroke-width=%273%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">
   <link rel="stylesheet" href="css/styles.css">
   <!-- Classic deferred scripts and module scripts run in document order, so Chart is defined before main.js runs. -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"
@@ -59,7 +60,7 @@
             <select class="field__control" id="filter-range" name="range">
               <option value="7">Last 7 days</option>
               <option value="30">Last 30 days</option>
-              <option value="90">Last 90 days</option>
+              <option value="90" selected>Last 90 days</option>
             </select>
           </div>
 

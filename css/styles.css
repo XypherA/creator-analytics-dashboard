@@ -16,6 +16,7 @@
   --color-focus: #ffd166;
 
   --chart-series: var(--color-accent);
+  --chart-fill: rgba(124, 140, 255, 0.14);
   --chart-grid: rgba(154, 164, 189, 0.14);
   --chart-text: var(--color-text-muted);
 
@@ -384,10 +385,6 @@ select {
   white-space: nowrap;
 }
 
-.table__heading--numeric,
-.table__cell--numeric {
-  text-align: right;
-}
 
 .table__sort {
   display: inline-flex;
@@ -428,6 +425,9 @@ select {
 
 .table__cell {
   padding: var(--space-3);
+  /* Reset <th> defaults: the title cell is a row header. */
+  font-weight: inherit;
+  text-align: left;
   border-bottom: 1px solid var(--color-border);
   white-space: nowrap;
 }
@@ -435,6 +435,16 @@ select {
 .table__cell--title {
   white-space: normal;
   min-width: 240px;
+}
+
+/* After .table__cell so right alignment wins for numeric columns. */
+.table__heading--numeric,
+.table__cell--numeric {
+  text-align: right;
+}
+
+.table__heading--numeric .table__sort {
+  flex-direction: row-reverse;
 }
 
 .table__video-title {

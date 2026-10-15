@@ -18,16 +18,23 @@ export function getCategories(videos) {
 }
 
 /**
+ * Inclusive window: "Last 7 days" covers the reference day and the 6 before it.
+ * Shared by the filter and the line chart's x-axis so both agree on the range.
+ */
+export function getDateWindow(referenceDate, range) {
+  return { start: referenceDate - (range - 1) * DAY_MS, end: referenceDate };
+}
+
+/**
  * Returns the videos matching every active filter. Pure: same input, same
  * output, no DOM access, which makes it trivial to reason about and test.
  */
-export function filterVideos(videos, { query, category, range }, referenceDate) {
+export function filterVideos(videos, { query, category }, dateWindow) {
   const normalizedQuery = query.trim().toLowerCase();
-  // Inclusive window: "Last 7 days" covers the reference day and the 6 before it.
-  const earliest = referenceDate - (range - 1) * DAY_MS;
 
   return videos.filter((video) =>
-    video.publishedAt >= earliest &&
+    video.publishedAt >= dateWindow.start &&
+    video.publishedAt <= dateWindow.end &&
     (category === 'all' || video.category === category) &&
     (normalizedQuery === '' || video.title.toLowerCase().includes(normalizedQuery))
   );

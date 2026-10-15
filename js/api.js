@@ -33,7 +33,7 @@ export async function fetchVideos({ simulateError = false } = {}) {
   await wait(ARTIFICIAL_DELAY_MS);
 
   if (simulateError) {
-    throw new Error('Simulated network error (the URL contains ?error=1).');
+    throw new Error('Simulated network error from the ?error=1 demo flag.');
   }
 
   const response = await fetch(DATA_URL);
